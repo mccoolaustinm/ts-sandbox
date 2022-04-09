@@ -3,11 +3,68 @@ export async function study() {
 }
 
 function test_radixSort() {
-    console.log(_radixSort([14,2,19,1,52,91,105,5021,2,1,11,15])) // 1 1 2 2 4 5 5 5 9 11 15 91
-    console.log(_radixSort([]))
-    console.log(_radixSort([1]))
-    console.log(_radixSort([10,2]))
-    console.log(_radixSort([2,1]))
+    console.log(radixSort([14,2,19,1,52,91,105,5021,2,1,11,15])) // 1 1 2 2 4 5 5 5 9 11 15 91
+    console.log(radixSort([]))
+    console.log(radixSort([1]))
+    console.log(radixSort([10,2]))
+    console.log(radixSort([2,1]))
+}
+
+function radixSort(arr: number[]): number[] {
+    if (arr.length <= 1) return arr
+
+    // i dont know how to derive the math between these two functions
+    // in a real-world / interview scenario i know that i could outline these functions
+    // and implement a temporary version using string conversion
+    // and then acknowledge that i would need to seek a reference for the math
+    function getDigit(num: number, d: number) {
+        return Math.floor(Math.abs(num) / Math.pow(10, d)) % 10
+    }
+
+    function countDigits(num: number) {
+        // get absolute value of number
+        // determine what power 10 needs to be raised to reach that number (possibly a very messy exponent)
+        // floor that messy exponent and then add 1 to it
+
+        // Math.log10(21388) ~= 4.33
+        // Math.floor(4.33) = 4, +1 = 5
+        // return 5 digits in 21388
+        return Math.floor(Math.log10(Math.abs(num))) + 1
+    }
+
+    // my original implementation was logically sound, just needed to get rid of the inefficient string methods
+    // granted i dont know how fast math operations like floor and log10 are and if thats better or worse than string conversion
+
+    let buckets: number[][] = [[],[],[],[],[],[],[],[],[],[]] // 10 sub-buckets
+    let max = 0, traversals = 0
+
+    function emptyBuckets() {
+        arr = []
+        buckets.forEach(bucket => {
+            arr.push(...bucket)
+        })
+        buckets = [[],[],[],[],[],[],[],[],[],[]] // empty buckets
+    }
+
+    // first iteration is split out in order to spare logic that is only needed on first traversal to get maximum digits
+    arr.forEach(n => {
+        max = Math.max(max, countDigits(n));
+        const digit = getDigit(n, traversals)
+        buckets[digit].push(n)
+    })
+    emptyBuckets()
+    traversals = 1
+    
+    while (traversals < max ) {
+        arr.forEach(n => {
+            const digit = getDigit(n, traversals)
+            buckets[digit].push(n)
+        })
+        emptyBuckets()
+        traversals++
+    }
+
+    return arr
 }
 
 function _radixSort(arr: number[]): number[] {
