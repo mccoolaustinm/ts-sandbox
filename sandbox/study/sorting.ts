@@ -1,5 +1,47 @@
 export async function study() {
-    test_quickSort()
+    test_radixSort()
+}
+
+function test_radixSort() {
+    console.log(_radixSort([14,2,19,1,52,91,105,5021,2,1,11,15])) // 1 1 2 2 4 5 5 5 9 11 15 91
+    console.log(_radixSort([]))
+    console.log(_radixSort([1]))
+    console.log(_radixSort([10,2]))
+    console.log(_radixSort([2,1]))
+}
+
+function _radixSort(arr: number[]): number[] {
+
+    if (arr.length <= 1) return arr
+
+    // so we need to create buckets for each digit 0 - 9
+    // we need a helper function to get the digit at position
+    // we need to traverse the array left to right and place elements in correct bucket making use of get digit
+    // we are done after i traversals where i is the number of digits in the largest number in array
+    
+    let buckets: number[][] = [[],[],[],[],[],[],[],[],[],[]] // 10 sub-buckets
+
+    // my only idea for dealing with the digits is to convert to strings and back which is very inefficient
+    // but lets implement anyway
+    // and just focus on how the sort works for now
+    let max = -1, traversals = 0
+    while (max === -1 || traversals < max ) {
+        arr.forEach(n => {
+            let s = (''+n)
+            if (s.length > max) max = s.length;
+            s = s.padStart(max,'0')
+            const digit = parseInt(s[s.length - 1 - traversals])
+            buckets[digit].push(n)
+        })
+        arr = []
+        buckets.forEach(bucket => {
+            arr.push(...bucket)
+        })
+        buckets = [[],[],[],[],[],[],[],[],[],[]] // empty buckets
+        traversals++
+    }
+
+    return arr
 }
 
 function test_quickSort() {
