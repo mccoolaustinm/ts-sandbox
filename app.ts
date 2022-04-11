@@ -9,6 +9,10 @@ import * as LISTS from "./sandbox/study/structures/list"
     // await RECURSION.study()
     // await SORTING.study()
     await LISTS.study()
+
+
+    
+    
     
     process.exit(0)
 })() //go!

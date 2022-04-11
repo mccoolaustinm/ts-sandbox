@@ -9,9 +9,8 @@ function testSinglyLinkedList() {
     list.push('World')
     list.push('!')
 
-    let x = list.pop()
-    let y = list.pop()
-    let z = list.pop()
+    list._reverse()
+    
     return
 }
 
@@ -42,6 +41,90 @@ class SinglyLinkedList<Type> {
     public tail: ListNode<Type>|null
     public length: number = 0
     constructor() {}
+
+    _reverse() {
+        // instructor solution
+        var node = this.head
+        this.head = this.tail
+        this.tail = node
+
+        let next, prev = null
+
+        while(node) {
+            next = node.next
+            node.next = prev
+            prev = node
+            node = next
+        }
+
+        return this
+    }
+
+    get(index: number): ListNode<Type>|null {
+        if (index < 0 || index >= this.length) return null
+        let n = this.head!
+        for (let i = 1; i <= index; i++) { // start at 1, if index is 0 loop is skipped and head returned
+            n = n.next!
+        }
+        return n
+    }
+
+    set(index: number, value: Type): boolean {
+        const n = this.get(index)
+        if (!n) return false
+        n.val = value
+        return true
+    }
+
+    insert(index: number, value: Type): boolean {
+        if (index < 0 || index >= this.length) return false
+        if (index === 0) return (this.unshift(value) as unknown as true) // same as !!void => true
+        if (index === this.length - 1) return (this.push(value) as unknown as true)
+
+        const before = this.get(index - 1)!
+        const after = before.next
+        let newNode = new ListNode(value)
+        before.next = newNode
+        newNode.next = after
+        this.length++
+        return true
+    }
+
+    remove(index: number): Type|undefined {
+        if (index < 0 || index >= this.length) return undefined
+        if (index === this.length - 1) return this.pop()
+        if (index === 0) return this.shift()
+
+        const before = this.get(index - 1)!
+        const removed = before.next!
+        const after = removed.next
+        before.next = after
+        this.length--
+
+        return removed.val
+    }
+
+    shift(): Type|undefined {
+        if (this.length === 0) return undefined
+        let oldHead = this.head!
+        this.head = oldHead!.next // nulls head if only 1 element
+        this.length--
+        if (this.length === 0) {
+            this.tail = null // make sure tail gets nulled too to allow garbage collection
+        }
+        return oldHead.val
+    }
+
+    unshift(value: Type) {
+        let oldHead = this.head
+        this.head = new ListNode(value)
+        this.head.next = oldHead
+
+        this.length++
+        if (this.length === 1) {
+            this.tail = this.head // make sure tail gets assigned too if the head is also the tail
+        }
+    }
 
     push(value: Type) {
         const node = new ListNode<Type>(value)
