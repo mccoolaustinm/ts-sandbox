@@ -9,8 +9,8 @@ function testSinglyLinkedList() {
     list.push('World')
     list.push('!')
 
-    list._reverse()
-    
+    list.reverse()
+
     return
 }
 
@@ -42,22 +42,22 @@ class SinglyLinkedList<Type> {
     public length: number = 0
     constructor() {}
 
-    _reverse() {
-        // instructor solution
-        var node = this.head
+    reverse(): SinglyLinkedList<Type> {
+        let node = this.head
         this.head = this.tail
         this.tail = node
 
-        let next, prev = null
+        let left = null, right = null
+        // 3 pointers: left, node, and right
 
         while(node) {
-            next = node.next
-            node.next = prev
-            prev = node
-            node = next
-        }
+            right = node.next // store the node to the right before disconnecting (null on last pass)
+            node.next = left // disconnect from node on the right and connect to node on left (null on first pass)
+            left = node // move left up 1 to current node
+            node = right // move node up 1 to next (right) node, (null on last pass)
+        } // keep going until node = next results in node being null, then done
 
-        return this
+        return this // return this for convenient reassignment ie const reversed = list.reverse()
     }
 
     get(index: number): ListNode<Type>|null {
