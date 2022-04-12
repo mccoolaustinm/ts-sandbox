@@ -32,8 +32,42 @@ function testSinglyLinkedList() {
 class ListNode<Type> {
     constructor(
         public val: Type, 
-        public next: ListNode<Type>|null = null
+        public next: ListNode<Type>|null = null,
+        public prev: ListNode<Type>|null = null
     ) {}
+}
+
+class DoublyLinkedList<Type> {
+    public head: ListNode<Type>|null
+    public tail: ListNode<Type>|null
+    public length: number = 0
+    constructor() {}
+
+    push(value: Type) {
+        const node = new ListNode(value)
+        if (this.length === 0) {
+            this.head = node
+        } else {
+            this.tail!.next = node
+        }
+        this.length++
+        node.prev = this.tail
+        this.tail = node
+    }
+
+    pop(): Type|undefined {
+        if (this.length === 0) return undefined
+        const popped = this.tail!
+        const left = popped.prev
+        this.tail = left
+        this.length--
+        if (this.length === 0) {
+            this.head = null
+        } else this.tail!.next = null
+        return popped.val
+    }
+
+
 }
 
 class SinglyLinkedList<Type> {
@@ -143,6 +177,7 @@ class SinglyLinkedList<Type> {
         if (this.length === 1) {
             const popped = this.head!
             this.head = null, this.tail = null
+            this.length = 0
             return popped.val
         }
         // valid for lists of length 2 or more
