@@ -44,30 +44,115 @@ class DoublyLinkedList<Type> {
     constructor() {}
 
     push(value: Type) {
-        const node = new ListNode(value)
+        const added = new ListNode(value)
         if (this.length === 0) {
-            this.head = node
+            this.head = added
         } else {
-            this.tail!.next = node
+            this.tail!.next = added
         }
         this.length++
-        node.prev = this.tail
-        this.tail = node
+        added.prev = this.tail
+        this.tail = added
     }
 
     pop(): Type|undefined {
         if (this.length === 0) return undefined
-        const popped = this.tail!
-        const left = popped.prev
+        const removed = this.tail!
+        const left = removed.prev
         this.tail = left
         this.length--
         if (this.length === 0) {
             this.head = null
         } else this.tail!.next = null
-        return popped.val
+        return removed.val
     }
 
+    shift(): Type|undefined {
+        if (this.length === 0) return undefined
+        const removed = this.head!
+        const right = removed.next
+        this.head = right
+        this.length--
+        if (this.length === 0) {
+            this.tail = null
+        } else this.head!.prev = null
+        return removed.val
+    }
 
+    unshift(value: Type) {
+        const added = new ListNode(value)
+        const right = this.head
+        this.head = added
+        this.head.next = right
+        this.length++
+        if (this.length === 1) {
+            this.tail = this.head
+        } else right!.prev = added
+    }
+
+    get(index: number) {
+        if (index < 0 || index >= this.length) return null
+
+        if (index > this.length / 2) {
+            let n = this.tail!
+            let count = this.length - 1
+            while (count !== index) {
+                n = n.prev!
+                count--
+            }
+            return n
+        } else {
+            let n = this.head!
+            let count = 0
+            while (count !== index) {
+                n = n.next!
+                count++
+            }
+            return n
+        }
+    }
+
+    set(index: number, value: Type): boolean {
+        const n = this.get(index)
+        if (!n) return false
+        n.val = value
+        return true
+    }
+
+    insert(index: number, value: Type): boolean {
+        if (index < 0 || index > this.length) return false
+        if (index === 0) return (this.unshift(value) as unknown as true)
+        if (index === this.length) return (this.push(value) as unknown as true)
+        
+        const added = new ListNode(value)
+        const left = this.get(index - 1)!
+        const right = left.next!
+
+        left.next = added
+        added.prev = left
+
+        added.next = right
+        right.prev = added
+
+        this.length++
+        return true
+    }
+
+    remove(index: number): Type|undefined {
+        if (index < 0 || index >= this.length) return undefined
+        if (index === 0) return this.shift()
+        if (index === this.length-1) return this.pop()
+
+        const removed = this.get(index)!
+        const left = removed.prev!
+        const right = removed.next!
+
+        left.next = right
+        right.prev = left
+        this.length--
+
+        return removed.val
+    }
 }
 
 class SinglyLinkedList<Type> {
@@ -111,9 +196,9 @@ class SinglyLinkedList<Type> {
     }
 
     insert(index: number, value: Type): boolean {
-        if (index < 0 || index >= this.length) return false
+        if (index < 0 || index > this.length) return false
         if (index === 0) return (this.unshift(value) as unknown as true) // same as !!void => true
-        if (index === this.length - 1) return (this.push(value) as unknown as true)
+        if (index === this.length) return (this.push(value) as unknown as true)
 
         const before = this.get(index - 1)!
         const after = before.next
