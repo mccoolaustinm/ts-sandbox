@@ -1,5 +1,16 @@
 export async function study() {
-    testSinglyLinkedList()
+    testDoublyLinkedList()
+}
+
+function testDoublyLinkedList() {
+    const list = new DoublyLinkedList<string>()
+    list.push('Hello')
+    list.push('World')
+    list.push('!')
+
+    list.reverse()
+
+    return
 }
 
 
@@ -38,10 +49,28 @@ class ListNode<Type> {
 }
 
 class DoublyLinkedList<Type> {
-    public head: ListNode<Type>|null
-    public tail: ListNode<Type>|null
+    public head: ListNode<Type>|null = null
+    public tail: ListNode<Type>|null = null
     public length: number = 0
     constructor() {}
+
+    reverse(): DoublyLinkedList<Type> {
+        if (this.length <= 1) return this
+        let current = this.head
+        this.head = this.tail!
+        this.tail = current
+
+        while (current) {
+            const left = current.prev
+            const right = current.next
+            current.prev = right
+            current.next = left
+            if (left) left.prev = current
+            current = right
+        }
+
+        return this
+    }
 
     push(value: Type) {
         const added = new ListNode(value)
