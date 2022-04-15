@@ -15,6 +15,10 @@ function testBST() {
     let _92 = tree.find(92)
     let _93 = tree.find(93)
     let n = new BinarySearchTree<number>().find(30)
+    let bfs = tree.bfs()
+    let dfs_preOrder = tree.dfs('pre')
+    let dfs_inOrder = tree.dfs('in')
+    let dfs_postOrder = tree.dfs('post')
     return
 }
 
@@ -65,5 +69,39 @@ class BinarySearchTree<Type> {
         }
         return vertex
     }
-}
 
+    bfs(): Type[] {
+        if (!this.root) return []
+
+        const visited: Type[] = []
+        const queue: TreeNode<Type>[] = []
+        queue.push(this.root)
+
+        while(queue.length) {
+            const vertex = queue.shift()!
+            visited.push(vertex.val)
+
+            if (vertex.left) queue.push(vertex.left)
+            if (vertex.right) queue.push(vertex.right)
+        }
+        return visited
+    }
+
+    dfs(order: 'pre'|'post'|'in'): Type[] {
+        if (!this.root) return []
+        const visited: Type[] = []
+
+        visit(this.root)
+
+        function visit(vertex: TreeNode<Type>) {
+            // the position of this push statement is all that differentiates pre- and post-order
+            if (order === 'pre') visited.push(vertex.val)
+            if (vertex.left) visit(vertex.left)
+            if (order === 'in') visited.push(vertex.val)
+            if (vertex.right) visit(vertex.right)
+            if (order === 'post') visited.push(vertex.val) 
+        }
+
+        return visited
+    }
+}
