@@ -23,6 +23,49 @@ class MaxBinaryHeap<Type> {
     values: Type[] = []
     constructor() {}
 
+    // instructor version, maybe easier to read
+    _extractMax(): Type|undefined {
+        if (this.values.length === 0) return undefined
+        if (this.values.length === 1) return this.values.pop()
+        const max = this.values[0]
+        const end = this.values.pop()!
+        this.values[0] = end
+
+        this._sink()
+
+        return max
+    }
+
+    _sink() {
+        const length = this.values.length
+        const weight = this.values[0]
+        let p = 0
+        while(true) {
+            let l = (2 * p) + 1
+            let r = (2 * p) + 2
+            let left, right
+            let swap = null
+            if (l < length){ 
+                left = this.values[l]
+                if (left > weight) {
+                    swap = l
+                }
+            }
+            if (r < length){ 
+                right = this.values[r]
+                if (    (!swap && right > weight) || 
+                        (left && swap && right > left)) 
+                {
+                    swap = r
+                }
+            }
+            if (!swap) break
+            this.values[p] = this.values[swap]
+            this.values[swap] = weight
+            p = swap
+        }
+    }
+
     extractMax(): Type|undefined {
         if (this.values.length === 0) return undefined
         if (this.values.length === 1) return this.values.pop()
