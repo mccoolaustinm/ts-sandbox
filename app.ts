@@ -15,7 +15,8 @@ import * as PROBLEM from "./sandbox/leetcode/spiral_matrix_2"
     // await LISTS.study()
     // await TREES.study()
     // await HEAPS.study()
-    await HASHTABLE.study()
+    // await HASHTABLE.study()
+    await GRAPHS.study()
     // await PROBLEM.study()
 
     process.exit(0)
