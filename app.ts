@@ -5,7 +5,7 @@ import * as LISTS from "./sandbox/study/structures/list"
 import * as TREES from "./sandbox/study/structures/trees"
 import * as HEAPS from "./sandbox/study/structures/heap"
 import * as HASHTABLE from "./sandbox/study/structures/hashtable"
-import * as PROBLEM from "./sandbox/leetcode/spiral_matrix_2"
+import * as PROBLEM from "./sandbox/leetcode/hash"
 import * as GRAPHS from "./sandbox/study/structures/graphs"
 
 (async function main() {

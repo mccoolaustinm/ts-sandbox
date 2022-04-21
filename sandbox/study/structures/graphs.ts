@@ -5,16 +5,21 @@ export async function study() {
 function testGraph() {
     const graph = new Graph()
     graph.addVertex('Baltimore')
+    graph.addVertex('Ocean City')
     graph.addVertex('Annapolis')
     graph.addVertex('Washington')
     graph.addVertex('Chattanooga')
 
     graph.addEdge('Baltimore', 'Annapolis')
+    graph.addEdge('Baltimore', 'Ocean City')
     graph.addEdge('Baltimore', 'Washington')
     graph.addEdge('Annapolis', 'Washington')
+    graph.addEdge('Washington', 'Chattanooga')
 
-    graph.removeEdge('Baltimore', 'Washington')
-    graph.removeVertex('Washington')
+    // graph.removeEdge('Baltimore', 'Washington')
+    // graph.removeVertex('Washington')
+
+    let dfs = graph.dfs('Baltimore')
     return
 }
 
@@ -25,6 +30,23 @@ interface AdjacencyList {
 class Graph {
     edges: AdjacencyList = {}
     constructor() {}
+
+    dfs(start: string): string[]|undefined {
+        const results: string[] = []
+        if (!this.hasVertex(start)) return undefined
+
+        const visited: {[key: string]: true} = {}
+
+        const traverse = (vertex: string) => {
+            visited[vertex] = true
+            results.push(vertex)
+            this.edges[vertex].forEach(neighbor => {
+                if (!visited[neighbor]) traverse(neighbor)
+            })
+        }
+        traverse(start)
+        return results
+    }
 
     hasVertex(vertex: string) {
         if (this.edges[vertex]) return true
