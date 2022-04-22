@@ -19,7 +19,8 @@ function testGraph() {
     // graph.removeEdge('Baltimore', 'Washington')
     // graph.removeVertex('Washington')
 
-    let dfs = graph.dfs('Baltimore')
+    let dfs1 = graph.dfsRecursive('Baltimore')
+    let dfs2 = graph.dfsRecursive('Baltimore')
     return
 }
 
@@ -31,7 +32,8 @@ class Graph {
     edges: AdjacencyList = {}
     constructor() {}
 
-    dfs(start: string): string[]|undefined {
+    // this seems really space heavy, like O(3n) space
+    dfsRecursive(start: string): string[]|undefined {
         const results: string[] = []
         if (!this.hasVertex(start)) return undefined
 
@@ -45,6 +47,27 @@ class Graph {
             })
         }
         traverse(start)
+        return results
+    }
+
+    dfsIterative(start: string): string[]|undefined {
+        const results: string[] = []
+        if (!this.hasVertex(start)) return undefined
+        const visited: {[key: string]: true} = {}
+
+        const stack: string[] = []
+        stack.push(start)
+        while (stack.length > 0) {
+            const vertex = stack.pop()!
+            if (!visited[vertex]) {
+                visited[vertex] = true
+                results.push(vertex)
+                this.edges[vertex].forEach(neighbor => {
+                    stack.push(neighbor)
+                })
+            }
+        }
+
         return results
     }
 
