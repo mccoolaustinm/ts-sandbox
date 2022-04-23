@@ -20,7 +20,8 @@ function testGraph() {
     // graph.removeVertex('Washington')
 
     let dfs1 = graph.dfsRecursive('Baltimore')
-    let dfs2 = graph.dfsRecursive('Baltimore')
+    let dfs2 = graph.dfsIterative('Baltimore')
+    let bfs = graph.bfs('Baltimore')
     return
 }
 
@@ -66,6 +67,30 @@ class Graph {
                     stack.push(neighbor)
                 })
             }
+        }
+
+        return results
+    }
+
+    bfs(start: string): string[]|undefined {
+        const results: string[] = []
+        if (!this.hasVertex(start)) return undefined
+
+        const visited: {[key: string]: true} = {}
+        visited[start] = true
+        
+        const queue: string[] = []
+        queue.push(start)
+
+        while(queue.length > 0) {
+            const vertex = queue.shift()!
+            results.push(vertex)
+            this.edges[vertex].forEach(neighbor => {
+                if(!visited[neighbor]) {
+                    visited[neighbor] = true
+                    queue.push(neighbor)
+                }
+            })
         }
 
         return results
