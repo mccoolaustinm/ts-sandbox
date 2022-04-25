@@ -31,9 +31,32 @@ interface WeightedEdges {
     [vertex: string]: {[vertex: string]: number}
 }
 
+// quick priority queue for dijkstras
+class PriorityQueue<Type> {
+    values: {value: Type, priority: number}[]
+    constructor(){}
+
+    enqueue(value: Type, priority: number) {
+        this.values.push({value, priority})
+        this._sort()
+    }
+
+    dequeue() {
+        return this.values.shift()
+    }
+
+    private _sort() {
+        this.values.sort((a, b) => a.priority - b.priority)
+    }
+}
+
 class WeightedGraph {
     edges: WeightedEdges = {}
     constructor() {}
+
+    shortestPath(start: string, end: string) {
+        
+    }
 
     addVertex(vertex: string) {
         if (this.edges[vertex]) return false
