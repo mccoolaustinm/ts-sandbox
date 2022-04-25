@@ -3,34 +3,70 @@ export async function study() {
 }
 
 function testGraph() {
-    const graph = new Graph()
+    // const graph = new Graph()
+    const graph = new WeightedGraph()
     graph.addVertex('Baltimore')
     graph.addVertex('Ocean City')
     graph.addVertex('Annapolis')
     graph.addVertex('Washington')
     graph.addVertex('Chattanooga')
 
-    graph.addEdge('Baltimore', 'Annapolis')
-    graph.addEdge('Baltimore', 'Ocean City')
-    graph.addEdge('Baltimore', 'Washington')
-    graph.addEdge('Annapolis', 'Washington')
-    graph.addEdge('Washington', 'Chattanooga')
+    graph.addEdge('Baltimore', 'Annapolis', 1)
+    graph.addEdge('Baltimore', 'Ocean City', 2)
+    graph.addEdge('Baltimore', 'Washington', 3)
+    graph.addEdge('Annapolis', 'Washington', 2)
+    graph.addEdge('Annapolis', 'Ocean City', 4)
+    graph.addEdge('Washington', 'Chattanooga', 8)
 
-    // graph.removeEdge('Baltimore', 'Washington')
-    // graph.removeVertex('Washington')
+    graph.removeEdge('Baltimore', 'Washington')
+    graph.removeVertex('Washington')
 
-    let dfs1 = graph.dfsRecursive('Baltimore')
-    let dfs2 = graph.dfsIterative('Baltimore')
-    let bfs = graph.bfs('Baltimore')
+    // let dfs1 = graph.dfsRecursive('Baltimore')
+    // let dfs2 = graph.dfsIterative('Baltimore')
+    // let bfs = graph.bfs('Baltimore')
     return
 }
 
-interface AdjacencyList {
-    [key: string]: string[]
+interface WeightedEdges {
+    [vertex: string]: {[vertex: string]: number}
+}
+
+class WeightedGraph {
+    edges: WeightedEdges = {}
+    constructor() {}
+
+    addVertex(vertex: string) {
+        if (this.edges[vertex]) return false
+        this.edges[vertex] = {}
+        return true
+    }
+
+    addEdge(vertex1: string, vertex2: string, weight: number) {
+        if (!this.edges[vertex1] || !this.edges[vertex2]) return false
+        this.edges[vertex1][vertex2] = weight
+        this.edges[vertex2][vertex1] = weight
+        return true
+    }
+
+    removeEdge(vertex1: string, vertex2: string) {
+        // doesnt test for existence
+        delete this.edges[vertex1][vertex2]
+        delete this.edges[vertex2][vertex1]
+    }
+
+    removeVertex(vertex: string) {
+        for (const edge in this.edges[vertex]) this.removeEdge(vertex, edge)
+        delete this.edges[vertex]
+    }
+
+}
+
+interface Edges {
+    [vertex: string]: string[]
 }
 
 class Graph {
-    edges: AdjacencyList = {}
+    edges: Edges = {}
     constructor() {}
 
     // this seems really space heavy, like O(3n) space
