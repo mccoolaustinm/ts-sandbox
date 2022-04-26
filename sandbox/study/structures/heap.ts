@@ -158,6 +158,10 @@ export class PriorityQueue<Type> {
         this.heap.push(node)
         this._bubble()
     }
+
+    hasNext() {
+        return this.heap.length > 0
+    }
 }
 
 function testHeap() {

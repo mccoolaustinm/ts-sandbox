@@ -1,3 +1,5 @@
+import { PriorityQueue } from "./heap"
+
 export async function study() {
     testGraph()
 }
@@ -9,17 +11,24 @@ function testGraph() {
     graph.addVertex('Ocean City')
     graph.addVertex('Annapolis')
     graph.addVertex('Washington')
+    graph.addVertex('Chicago')
     graph.addVertex('Chattanooga')
+    graph.addVertex('Shanghai')
 
     graph.addEdge('Baltimore', 'Annapolis', 1)
     graph.addEdge('Baltimore', 'Ocean City', 2)
     graph.addEdge('Baltimore', 'Washington', 3)
+    graph.addEdge('Baltimore', 'Chicago', 9)
+    graph.addEdge('Chicago', 'Chattanooga', 7)
     graph.addEdge('Annapolis', 'Washington', 2)
     graph.addEdge('Annapolis', 'Ocean City', 4)
     graph.addEdge('Washington', 'Chattanooga', 8)
 
-    graph.removeEdge('Baltimore', 'Washington')
-    graph.removeVertex('Washington')
+    const path = graph.shortestPath('Ocean City', 'Chattanooga') // "Ocean City > Baltimore > Washington > Chattanooga"
+    const impossiblePath = graph.shortestPath('Ocean City', 'Shanghai') // undefined
+
+    // graph.removeEdge('Baltimore', 'Washington')
+    // graph.removeVertex('Washington')
 
     // let dfs1 = graph.dfsRecursive('Baltimore')
     // let dfs2 = graph.dfsIterative('Baltimore')
@@ -31,8 +40,9 @@ interface WeightedEdges {
     [vertex: string]: {[vertex: string]: number}
 }
 
-// quick priority queue for dijkstras
-class PriorityQueue<Type> {
+// bad priority queue for dijkstras
+// actually just going to make a proper one since i dont feel like i've mastered heaps yet
+class BadPriorityQueue<Type> {
     values: {value: Type, priority: number}[]
     constructor(){}
 
@@ -54,8 +64,66 @@ class WeightedGraph {
     edges: WeightedEdges = {}
     constructor() {}
 
-    shortestPath(start: string, end: string) {
-        
+    shortestPath(start: string, end: string): string|undefined {
+        // the distances map will eventually store the minimum known total distance from the start vertex (0 for the start vertex itself)
+        // it begins with all the unknown distances initialized to infinity (how to implement in other languages? need to try this in c++)
+        const bestDistance: {[edge: string]: number} = {}
+
+        // the bestPath map will, for every vertex, identify the vertex from which the shortest path was found from the starting vertex
+        // not the same as closest neighbor, as the closest neighbor to a given vertex may actually be farther from the starting vertex
+        // initializes as null, and starting vertex will always be null as it has no "prior" vertex to reach it from
+        const bestPath: {[edge: string]: string|null} = {}
+
+        // a little helper function for printing the best path to end stored in bestPath as a string
+        function bestPathString() {
+            if (!bestPath[end]) return undefined
+            let pathString = ''
+            let previous: string|null = end
+            while (previous) {
+                pathString = previous + pathString
+                previous = bestPath[previous]
+                if (previous) pathString = ' > ' + pathString
+            }    
+            return pathString
+        }
+
+        // prioritizes visiting nodes based on the minimum known total distance from the start vertex (0 for the start vertex itself)
+        // it begins with all the priorities initialized to the unknown distance of infinity
+        const pq = new PriorityQueue<string>()
+
+        for (const vertex in this.edges){ 
+            if (vertex === start) bestDistance[vertex] = 0
+            else bestDistance[vertex] = Infinity
+            bestPath[vertex] = null
+            pq.enqueue({value: vertex, priority: bestDistance[vertex]})
+        }
+        // as the algorithm progresses, the distances and priorities will be updated from infinity
+        // priority queue will begin with the starting node as it has been given priority 0
+
+        while (pq.hasNext()) {
+            const vertex = pq.dequeue()!.value
+            if (vertex === end) return bestPathString() // exit point
+            
+            const vertex_DistanceFromStart = bestDistance[vertex]
+            
+            const edges = this.edges[vertex]
+            for (const neighbor in edges) {
+                const vertex_DistanceToNeighbor = edges[neighbor]
+                const neighbor_DistanceFromStart = vertex_DistanceFromStart + vertex_DistanceToNeighbor
+
+                if (neighbor_DistanceFromStart < bestDistance[neighbor]) {
+                    bestDistance[neighbor] = neighbor_DistanceFromStart
+                    bestPath[neighbor] = vertex
+
+                    // this wont currently overwrite the already queued version of vertex
+                    // but the new entry, with a shorter distance, will be visited first
+                    // this doesnt break the algorithm
+                    // but extra visits will be made that dont accomplish anything (because those visits wont have any new shortest paths)
+                    // it just wastes time. to fix, enqueue() should have a unique flag option that overwrites existing queued tasks
+                    pq.enqueue({value: neighbor, priority: bestDistance[neighbor]})
+                }
+            }
+        }
     }
 
     addVertex(vertex: string) {
