@@ -1,14 +1,131 @@
 // @ts-nocheck
 export async function study() {
-    test_capitalizeFirst()
+    test_collectStrings()
+}
+
+// wanted to practice some recursion without helper methods, even if i would never in my right mind use recursion this way in a project
+
+function test_collectStrings() {
+    let strings = collectStrings({
+        stuff: "foo",
+        data: {
+            val: {
+                thing: {
+                    info: "bar",
+                    moreInfo: {
+                        evenMoreInfo: {
+                            weMadeIt: "baz"
+                        }
+                    }
+                }
+            }
+        }
+    })
+    return
+}
+
+function collectStrings(object: any, s: string[] = []) {
+    if (typeof object === 'string') {
+        s.push(object)
+    } else if (typeof object === 'object') {
+        Object.keys(object).forEach(key => collectStrings(object[key], s))
+    }
+    return s
+}
+
+function test_stringifyNumbers() {
+    let obj1 = stringifyNumbers('1')
+    let obj2 = stringifyNumbers({
+        num: 1,
+        test: [],
+        data: {
+            val: 4,
+            info: {
+                isRight: true,
+                random: 66
+            }
+        }
+    })
+    
+    return
+}
+
+function stringifyNumbers(object: any) {
+    if (typeof object !== 'object') {
+        let number = parseInt(object)
+        if (!Number.isNaN(number)) object = (object as number).toString()
+    } else {
+        Object.keys(object).forEach(key => {
+            object[key] = stringifyNumbers(object[key])
+        })
+    }
+    return object
+}
+
+function test_capitalizeWords() {
+    const words = capitalizeWords(['i', 'am', 'learning', 'recursion'])
+    return
+}
+
+function capitalizeWords(words: string[], w = words.length - 1) {
+    if (w < 0) return words
+    words[w] = words[w].toUpperCase()
+    return capitalizeWords(words, w - 1)
+}
+
+function test_nestedEvenSum() {
+
+    // let x = nestedEvenSum(true)
+    // x = nestedEvenSum(2)
+    // x = nestedEvenSum('2')
+
+    let x = nestedEvenSum({
+        outer: 2,
+        obj: {
+          inner: 2,
+          otherObj: {
+            superInner: 2,
+            notANumber: true,
+            alsoNotANumber: "yup"
+          }
+        }
+      }) // 6
+
+    x = nestedEvenSum({
+        a: 2,
+        b: {b: 2, bb: {b: 3, bb: {b: 2}}},
+        c: {c: {c: 2}, cc: 'ball', ccc: 5},
+        d: 1,
+        e: {e: {e: 2}, ee: 'car'}
+      }) // 10
+
+    return
+}
+
+function nestedEvenSum(object: any) {
+    if (typeof object !== 'object') {
+        let number = parseInt(object)
+        if (Number.isNaN(number)) return 0
+        else if (number % 2 === 1) return 0 // number is odd
+        else return number
+    } else {
+        let total = 0
+        Object.keys(object).forEach(key => {
+            total += nestedEvenSum(object[key])
+        })
+        return total
+    }
 }
 
 function test_capitalizeFirst(){
-
+    let c = capitalizeFirst(['car', 'taco', 'banana'])
+    return
 }
 
-function capitalizeFirst() {
-    
+function capitalizeFirst(words: string[], i = 0) {
+    if (i === words.length) return words
+    if (words[i].length) words[i] = words[i][0].toUpperCase() + words[i].substring(1)
+    return capitalizeFirst(words, i + 1)
 }
 
 function test_flatten() {
@@ -117,6 +234,7 @@ function fib(n) {
     // return nth number in fibonacci sequence
     if (n < 1) throw new Error('positive integers only!') 
     if (n <= 2) return 1
+    if (n > 40) throw new Error('n too high for recursive fib')
     return fib(n - 1) + fib(n - 2)
 }
 

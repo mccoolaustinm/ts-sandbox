@@ -14,14 +14,14 @@ import * as GRAPHS from "./sandbox/study/structures/graphs"
     
 
     // await PATTERNS.study()
-    // await RECURSION.study()
+    await RECURSION.study()
     // await SORTING.study()
     // await LISTS.study()
     // await TREES.study()
     // await HEAPS.study()
     // await HASHTABLE.study()
     // await GRAPHS.study()
-    await DYNAMIC.study()
+    // await DYNAMIC.study()
     // await PROBLEM.study()
 
     process.exit(0)
