@@ -1,5 +1,6 @@
 export async function study() {
-    test_radixSort()
+    // test_radixSort()
+    test_inPlaceMerge()
 }
 
 function test_radixSort() {
@@ -201,4 +202,107 @@ function mergeTwoSortedArrays(n: number[], m: number[]): number[] {
 
     return merged
 }
+
+function _mergeTwoSortedArrays(array1: number[], array2: number[]): number[] {
+    const merged: number[] = []
+    let pointer1 = 0, pointer2 = 0
+
+    // increment both arrays using their respective pointers. continue until one array is finished, because we can just append the remainder of the other array after that
+    while (pointer1 < array1.length && pointer2 < array2.length) {
+        // compare the values at the pointers. whichever is smaller gets pushed and that array is incremented
+        if (array1[pointer1] <= array2[pointer2]) {
+            // array1 contains the next smallest value, so it gets pushed into our merged array first to maintain the sort
+            merged.push(array1[pointer1])
+            pointer1++
+        } else {
+            merged.push(array2[pointer2])
+            pointer2++
+        }
+    }
+    // one of the arrays has been empty, and we know that all of the values remaining in the other array are still sorted, and larger than merged, and can simply be appended
+    
+    if (pointer1 < array1.length) merged.push(...array1.slice(pointer1)) // array1 still has values left, so splice from the pointer location and spread the resulting array into the merged array
+    else if (pointer2 < array2.length) merged.push(...array2.slice(pointer2))
+
+    return merged
+}
+
+function test_inPlaceMerge() {
+    let m1 = [1,2,3,8,0,0,0]
+    mergeSortedArraysInPlace(m1,4,[2,5,6],3)
+
+    let m2 = [1,2,3,0,0,0]
+    mergeSortedArraysInPlace(m2,3,[2,5,6],3)
+
+    let m3 = [0]
+    mergeSortedArraysInPlace(m3,0,[1],1)
+    return
+}
+
+function mergeSortedArraysInPlace(array1: number[], array1DataLength: number, array2: number[], array2Length: number): void {
+    // the length property is useful for array1 to know where the valid data is
+    // maybe similar to the merge two sorted arrays into new array problem
+    // but we can try swapping nums1 items into nums2 as we go?
+
+    let pointer1 = 0, pointer2 = 0
+    // while(pointer1 < array1.length) {
+    //     // compare the values at the pointers. whichever is smaller gets placed at this location in array1
+    //     // unlike the other merge approach, we always increment pointer1 here
+    //         // we also need to check that we're not comparing a trailing zero placeholder
+    //     if (pointer1 < array1DataLength && array1[pointer1] <= array2[pointer2]) {
+    //         // array1 contains the next smallest value, so nothing happens but increment pointer1
+    //         pointer1++
+    //     } else {
+    //         // array2 contains the next smallest non-placeholder value
+    //         // we need to place this value in the current location in array1, but we dont want to lose the data of array1
+    //         // so lets store it in array2!
+    //         let array1Item = array1[pointer1]
+    //         array1[pointer1] = array2[pointer2]
+
+    //         // if the array1Item was a valid piece of data and not a placeholder/trailing-zero
+    //         // insert the array1 element into correct position in array2
+    //         if (pointer1 < array1DataLength) {
+    //             let insert = 0
+    //             while (array2[insert] < array1Item) insert++
+    //             array2.splice(insert, 0, array1Item)    
+    //         }
+
+    //         // increment both arrays
+    //         pointer1++
+    //         pointer2++
+    //     }
+    // }
+
+    // another option is to not damage array2, especially since the problem didnt give permission to
+    // so since i ended up using splice() anyway, i may as well just splice array1
+
+    // let array1Bound = array1.length - array1DataLength
+    // while (pointer2 < array2.length) {
+    //     // if pointer1 is within the bounds of valid data in array1, ie, not a trailing zero, compare to array2
+    //     if (pointer1 < array1Bound && array1[pointer1] <= array2[pointer2]) {
+    //         // if pointer1 was not a trailing zero and is sorted before array2, increment pointer1 without altering array1
+    //         pointer1++
+    //     } else {
+    //         // if we have either reached trailing zeroes in array1 or the item at array1 should be sorted higher
+
+    //         array1.splice(pointer1,0,array2[pointer2]) // splice an item from array2 into array1
+    //         array1.pop() // remove a trailing placeholder from the end of array1 to keep array1 length consistent
+    //         array1Bound++
+    //         pointer1++
+    //         pointer2++
+    //     }
+    // }
+
+    array1.splice(array1DataLength)
+    while (pointer2 < array2.length) {
+        if (array1[pointer1] <= array2[pointer2]) {
+            pointer1++
+        } else {
+            array1.splice(pointer1,0,array2[pointer2]) // splice an item from array2 into array1
+            pointer1++
+            pointer2++
+        }
+    }
+    return
+};
 

@@ -64,6 +64,8 @@ function fibonacciTabulated(n: number) {
 
 // O(n) time and O(1) space
 function bestFib(n: number) {
+    if (n < 1) return 0
+    
     let t_minus_2 = 0, t_minus_1 = 1
     
     for (let t = 2; t <=n; t++) {
