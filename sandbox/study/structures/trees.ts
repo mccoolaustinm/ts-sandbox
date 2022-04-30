@@ -61,6 +61,69 @@ class BinarySearchTree<Type> {
         }
     }
 
+    remove(value: Type): boolean {
+        //!
+        console.warn('bst.remove() not fully implemented, will error')
+        if (!this.root) return false
+        let vertex: TreeNode<Type>|null = this.root
+
+        let parent: {
+            vertex: TreeNode<Type>,
+            childIsLeft?: true,
+            childIsRight?: true
+        }|null = null
+
+        //? first find the vertex
+        while (vertex && vertex.val !== value) {
+            // start with the basic framework of finding the value
+             
+            if (value < vertex.val){ 
+                vertex = vertex.left
+                // but also reassign parent before choosing a child
+                parent = {vertex: vertex!, childIsLeft: true}
+            }
+            else if (value > vertex.val){ 
+                vertex = vertex.right
+                parent = {vertex: vertex!, childIsRight: true}
+            }
+        }
+        if (!vertex) return false // not found, not removed
+
+        //? remove and reconnect children to parent
+
+        if (!vertex.right) { // vertex has no right child, simplest scenario
+
+            if (!parent){ // no parent, vertex is root, pass left (possibly null) child up to root
+                this.root = vertex.left 
+                return true
+            }
+
+            // connect left (possibly null) child to parent
+            if (parent.childIsLeft) parent.vertex.left = vertex.left
+            else if (parent.childIsRight) parent.vertex.right = vertex.left
+
+        } else if (!vertex.right.left) { // vertex has a right child with no left child
+
+            // reconnect vertex's left child to the vertex's right child 
+            vertex.right.left = vertex.left
+
+            if (!parent){ // no parent, vertex is root, pass right child up to root
+                this.root = vertex.right 
+                return true
+            }
+
+            // connect right child to parent
+            if (parent.childIsLeft) parent.vertex.left = vertex.right
+            else if (parent.childIsRight) parent.vertex.right = vertex.right
+
+        } else { // vertex has a right child with a left child
+            // todo: no idea
+            throw new Error('i havent figured out how to do this yet!')
+        }
+
+        return true
+    }
+    
     find(value: Type) {
         let vertex: TreeNode<Type>|null = this.root
         while(vertex && vertex.val !== value) {
