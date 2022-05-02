@@ -62,8 +62,6 @@ class BinarySearchTree<Type> {
     }
 
     remove(value: Type): boolean {
-        //!
-        console.warn('bst.remove() not fully implemented, will error')
         if (!this.root) return false
         let vertex: TreeNode<Type>|null = this.root
 
@@ -175,7 +173,7 @@ class BinarySearchTree<Type> {
 
         const visited: Type[] = []
         const queue: TreeNode<Type>[] = []
-        queue.push(this.root)
+        queue.push(this.root) // actually use a priority queue if the tree gets deep enough and the queue gets extremely long
 
         while(queue.length) {
             const vertex = queue.shift()!

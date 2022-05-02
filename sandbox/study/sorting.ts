@@ -1,6 +1,49 @@
 export async function study() {
     // test_radixSort()
-    test_inPlaceMerge()
+    // test_inPlaceMerge()
+    test_insertionSort()
+}
+
+function test_insertionSort() {
+    const r = insertionSort([9,5,11,2,4,8])
+    return
+}
+
+function insertionSort(arr: number[]): number[] {
+    if (arr.length < 2) return arr
+
+    // consider the "left subarray" to already be sorted
+    // thus the first item at index 0 is already sorted as the only item in the left subarray
+    // we will continue to expand the left subarray as we sorted-insert items from the right subarray into it
+
+    // iterate over right subarray (beginning at index 1 as index 0 starts in the left subarray)
+    for (let r = 1; r < arr.length; r++) {
+        let element = arr[r]
+
+        // now lets iterate over the left subarray
+        // this nested loop results in n^2 worst case
+            // but if we knew that only one item needed sorting
+            // or, even better, knew only the last item needed sorting and could begin the outer loop at r = arr.length - 1
+            // then only one inner loop need take place and the sorting performance would be O(n)
+            // this is the use case of insertion sort! "re-sorting on insertion"
+
+        let l = r - 1 // the end of left subarray
+
+        // while the values in left subarray are still larger than element
+        while (l >= 0 && arr[l] > element) {
+            // we need to shift these values up to make space for where element will be inserted
+            arr[l+1] = arr[l] // the first value shifted will be shifted into the original index of element, which is fine as we recorded element
+            l--
+        }
+
+        // after we have shifted these values up
+        // we have either reached an item in left subarray that is smaller than element, or we have reached negative index
+        // slide in element ahead of the left index, not needing to worry about overwriting as every larger value has been shifted up
+        // and the removal of element from its original position made room for that shifting-by-1 of every larger value to the left of it
+        arr[l+1] = element
+    }
+
+    return arr
 }
 
 function test_radixSort() {
@@ -118,7 +161,6 @@ function test_quickSort() {
  *      swap smaller elements to pivot + swaps
  *      swap pivot to pivot + swaps
  * recursively quicksort subarrays to left and right of final pivot position
- *      
  */
 function quickSort(arr: number[]): number[] {
     
@@ -164,9 +206,14 @@ function mergeSort(arr: number[]): number[] {
     if (arr.length <= 1) {
         return arr
     }
+    // keep splitting the array in half, sorting the halves, and merging the halves
     const mid = Math.floor(arr.length / 2)
     const left = arr.slice(0, mid)
     const right = arr.slice(mid)
+    // mergeTwoSorted will exchange items between sorted arrays to combine them quickly (O(n) time)
+    // and mergeSort recursive will keep doing this on smaller and smaller subarrays
+    // the mergeSort recursion results in a log n term, and the merging sorted arrays results in an O(n) term
+    // hence O(n log n)
     return mergeTwoSortedArrays(mergeSort(left), mergeSort(right))
 }
 
