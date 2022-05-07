@@ -208,6 +208,51 @@ class SinglyLinkedList<Type> {
         return this // return this for convenient reassignment ie const reversed = list.reverse()
     }
 
+    reverseBetween(head: ListNode<Type>, left: number, right: number): ListNode<Type> | null {
+    
+        if (!head.next) return head
+        
+        let leftTail: ListNode<Type> | null // will have its next pointer reassigned to the head of the reversed list
+        
+        let current: ListNode<Type> = head, index = 1 // reused later for the reversal
+        
+        while (index < left) {
+            leftTail = current
+            index++
+            current = current.next!
+        } // if left is 1, loop will not start and leftTail will be left null and current will still be head
+        
+        let midTail = current   // the beginning of the list to be reversed, (and after reversal, will be its tail) 
+                                // will have next reassigned to rightHead
+        
+        let midHead: ListNode<Type>   // the end of the list to be reversed (after reversal, will be its head)
+                                // leftTail will need to point to midHead
+        
+        // reverse middle list
+        let previous: ListNode<Type> | null = null
+        midHead = current // advance midHead until we reach its correct position
+        // reversal is inclusive of right index
+        while (index <= right) {
+            midHead = current
+            current = midHead.next! // store node to head's right for next iteration
+            midHead.next = previous // connect
+            previous = midHead
+            index++
+        }
+        
+        // midTail, midHead, and rightHead are all now correctly positioned
+        let rightHead: ListNode<Type> | null = current
+        
+        // connect leftTail to midHead, if leftTail exists (wont exist if left is 1)
+        if (left > 1) leftTail!.next = midHead
+        else head = midHead // if reversing the beginning of the list, make sure we adjust the greater list-head position
+        
+        // connect midTail to rightHead, which could be null if right === length of list
+        midTail.next = rightHead
+        
+        return head // if the reversal occurs at the begining of list, head doesnt get reassigned
+    }
+
     get(index: number): ListNode<Type>|null {
         if (index < 0 || index >= this.length) return null
         let n = this.head!
