@@ -253,6 +253,30 @@ class SinglyLinkedList<Type> {
         return head // if the reversal occurs at the begining of list, head doesnt get reassigned
     }
 
+    detectCycle(head: ListNode<Type> | null): ListNode<Type> | null {
+        if (!head || !head.next) return null
+        let slow: ListNode<Type> = head, fast: ListNode<Type> | null = head // these need to both start at head, or they wont meet at the median
+        
+        while (fast && fast.next) {
+            // if there is a cycle, the slow and fast pointers will eventually meet at the median of the cycle
+            fast = fast.next.next
+            slow = slow.next!
+            if (fast === slow) return findCycle(slow)
+        }
+        
+        function findCycle(median: ListNode<Type>) {
+            // find cycle beginning - traverse from head and cycle median and meet in the middle
+            let left = head, right = median
+            while (left !== right) {
+                left = left!.next
+                right = right.next!
+            }
+            return left
+        }
+        
+        return null
+    }
+
     get(index: number): ListNode<Type>|null {
         if (index < 0 || index >= this.length) return null
         let n = this.head!
