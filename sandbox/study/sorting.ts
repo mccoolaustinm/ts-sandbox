@@ -1,7 +1,7 @@
 export async function study() {
     // test_radixSort()
     // test_inPlaceMerge()
-    test_insertionSort()
+    test_quickSort()
 }
 
 function test_insertionSort() {
@@ -154,6 +154,49 @@ function test_quickSort() {
     console.log(quickSort([2,1]))
 }
 
+// significantly improved, in-place quicksort, doesnt keep slicing and spreading arrays
+function quickSort(arr: number[]): number[] {
+
+    quickSortInPlace(arr)
+
+    function quickSortInPlace(arr: number[], left: number = 0, right: number = arr.length - 1) {
+        if (left >= right) return // base case array of 1 or 0 is already sorted
+
+        const PIVOT = sortPivot(arr, left, right)
+        // array is now sorted at index PIVOT, just need to sort the left and right subarrays
+        quickSortInPlace(arr, left, PIVOT - 1) // if this ends up being a subarray of length 1, it immediately returns
+        quickSortInPlace(arr, PIVOT + 1, right)
+    }
+
+    function sortPivot(arr: number[], left: number, right: number): number {
+        const pivotElement = arr[right]
+        let subarrayLength = left
+        // creating a subarray to the left of the array where all values are smaller than pivot
+        // incrementing an index for the right-bound of that left subarray, subarrayNext
+        // each iteration, if the iterated element is smaller than pivot
+        // we swap this element with whatever is currently at the boundary of the subarray
+        // it is now part of the "smaller than pivot element" subarray and the subarray length / boundary index gets incremented by 1 
+        for (let i = left; i < right; i++) {
+            if (arr[i] <= pivotElement) {
+                swap(arr, subarrayLength, i)
+                subarrayLength++
+            }
+        }
+        // now we finally place the pivot element to the right of the subarray. all values to the left are now smaller than pivot element
+        swap(arr, subarrayLength, right)
+        return subarrayLength // and return the pivot's final index
+    }
+
+    function swap(arr: number[], pivot: number, i: number) {
+        let temp = arr[pivot]
+        arr[pivot] = arr[i]
+        arr[i] = temp
+    }
+    
+
+    return arr
+}
+
 /**
  * choose first element as pivot (revisit pivot selection later)
  * find that pivots final index
@@ -162,7 +205,7 @@ function test_quickSort() {
  *      swap pivot to pivot + swaps
  * recursively quicksort subarrays to left and right of final pivot position
  */
-function quickSort(arr: number[]): number[] {
+function _quickSort(arr: number[]): number[] {
     
     if (arr.length <= 1) return arr // base case array of 1 or 0 is sorted
     

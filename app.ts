@@ -4,9 +4,10 @@ import * as SORTING from "./sandbox/study/sorting"
 import * as DYNAMIC from "./sandbox/study/dynamic"
 import * as LISTS from "./sandbox/study/structures/list"
 import * as TREES from "./sandbox/study/structures/trees"
+import * as TRIES from "./sandbox/study/structures/prefix tree (trie)"
 import * as HEAPS from "./sandbox/study/structures/heap"
 import * as HASHTABLE from "./sandbox/study/structures/hashtable"
-import * as PROBLEM from "./sandbox/leetcode/trapping_rain_water"
+import * as PROBLEM from "./sandbox/leetcode/monarchy"
 import * as GRAPHS from "./sandbox/study/structures/graphs"
 import * as QUEUE from "./sandbox/study/structures/queue"
 
@@ -17,12 +18,13 @@ import * as QUEUE from "./sandbox/study/structures/queue"
     // await SORTING.study()
     // await LISTS.study()
     // await TREES.study()
+    await TRIES.study()
     // await HEAPS.study()
     // await HASHTABLE.study()
     // await GRAPHS.study()
     // await DYNAMIC.study()
     // await QUEUE.study()
-    await PROBLEM.study()
+    // await PROBLEM.study()
 
     process.exit(0)
 })() //go!
